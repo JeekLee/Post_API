@@ -1,32 +1,41 @@
 package com.example.post_api.controller;
 
 import com.example.post_api.dto.ForumRequestDto;
+import com.example.post_api.dto.ForumResponseDto;
 import com.example.post_api.entity.Forum;
 import com.example.post_api.service.ForumService;
 import lombok.RequiredArgsConstructor;
-import org.springframework.stereotype.Controller;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.servlet.ModelAndView;
+import org.springframework.web.bind.annotation.*;
 
-@Controller
+import java.security.NoSuchAlgorithmException;
+import java.util.List;
+
+@RestController     // Controller vs RestController 블로그에 정리할 것 + 암호화 구현
 @RequiredArgsConstructor
 public class PostAPIController {
     private final ForumService forumService;
 
-    @GetMapping("/forums")
-    public ModelAndView listForumPage() {
-        return new ModelAndView("/forums/index");
+    @GetMapping("/api/forum/{id}")
+    @ResponseBody
+    public ForumResponseDto getForum(@PathVariable long id) {
+        return forumService.getForum(id);
     }
 
-    @GetMapping("/forums/new")
-    public ModelAndView postForumPage() {
-        return new ModelAndView("/forums/createForum");
+    @GetMapping("/api/forum/forums")
+    public List<Forum> getForums() {
+        return forumService.getForums();
     }
 
-    @PostMapping("/forums/new")
-    public Forum postForum(@RequestBody ForumRequestDto requestDto) {
+    @PostMapping("/api/forum/new")
+    public Forum createForum(@RequestBody ForumRequestDto requestDto) throws NoSuchAlgorithmException {
         return forumService.createForum(requestDto);
     }
+
+    @PutMapping("/api/forum/update/{id}/{password}")
+    @ResponseBody
+    public ForumResponseDto updateForum(@PathVariable Long id, @PathVariable String password,
+                             @RequestBody ForumRequestDto requestDto) throws NoSuchAlgorithmException {
+        return forumService.updateForum(id, password, requestDto);
+    }
+
 }

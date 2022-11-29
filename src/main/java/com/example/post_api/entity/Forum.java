@@ -22,15 +22,25 @@ public class Forum extends TimeStamp{
     @Column(nullable = false)
     private String password;
 
-    public Forum(String username, String password, String contents){
+    @Column(nullable = false)
+    private String title;
+
+    public Forum(String username, String password, String contents, String title){
         this.username = username;
         this.password = password;
         this.contents = contents;
+        this.title = title;
     }
 
     public Forum(ForumRequestDto requestDto){
         this.username = requestDto.getUsername();
         this.password = requestDto.getPassword();
-        this.contents = requestDto.getPassword();
+        this.contents = requestDto.getContents();
+        this.title = requestDto.getTitle();
+    }
+    public void update(ForumRequestDto requestDto){
+        this.username = requestDto.getUsername();
+        this.title = requestDto.getTitle();
+        this.contents = requestDto.getContents();
     }
 }

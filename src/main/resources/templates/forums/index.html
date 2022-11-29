@@ -1,29 +1,73 @@
 <!DOCTYPE html>
-<html xmlns:th="http://www.thymeleaf.org">
+<html lang="ko" xmlns:th="http://www.thymeleaf.org">
 <head>
   <meta charset="UTF-8">
-  <title>Title</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Timeline Service</title>
+
+  <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
+  <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+KR:wght@500&display=swap" rel="stylesheet">
+  <script>
+    $(document).ready(function () {
+      // HTML 문서를 로드할 때마다 실행합니다.
+      getMessages();
+    })
+    function makeMessage(id, username, modifiedAt, title) {
+      return `<div class="post">
+                <tr>
+                    <th>${id}</th>
+                    <th>${title}</th>
+                    <th>${username}</th>
+                    <th>${modifiedAt}</th>
+                </tr>
+              </div>`;
+    }
+
+    // post 하나를 HTML로 만들어서 body 태그 내에 원하는 곳에 넣음
+    function addHTML(id, username, modifiedAt, title) {
+      let tempHtml = makeMessage(id, username, modifiedAt, title);
+      $('#posts-box').append(tempHtml);
+    }
+
+    // 메모를 불러와서 보여줍니다.
+    function getMessages() {
+      // 1. 기존 메모 내용을 지웁니다.
+      $('#cards-box').empty();
+      // 2. 메모 목록을 불러와서 HTML로 붙입니다.
+      $.ajax({
+        type: "GET",
+        url: "/forums/api",
+        data: {},
+        success: function (response) {
+          console.log(response);
+          for (let i = 0; i < response.length; i++) {
+            let message = response[i];
+            let id = message['id'];
+            let username = message['username'];
+            let contents = message['contents'];
+            let password = message['password'];
+            let title = message['title'];
+            let modifiedAt = message['modifiedAt'];
+            addHTML(id, username, contents, modifiedAt, title);
+          }
+        }
+      });
+    }
+  </script>
 </head>
+
 <body>
-<div class="container">
-  <div>
-    <table>
-      <thead>
-      <tr>
-        <th>#</th>
-        <th>제목</th>
-        <th>시간</th>
-      </tr>
-      </thead>
-      <tbody>
-      <tr th:each="member : ${members}">
-        <td th:text="${member.id}"></td>
-        <td th:text="${member.name}"></td>
-        <td th:text="${member.birthday}"></td>
-      </tr>
-      </tbody>
-    </table>
-  </div>
+<div class="wrap">
+  <tr>
+    <th>#</th>
+    <th>제목</th>
+    <th>이름</th>
+    <th>수정</th>
+  </tr>
+</div>
+<div class="posts-box">
+
 </div>
 </body>
+
 </html>

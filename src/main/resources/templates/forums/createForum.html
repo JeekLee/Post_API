@@ -1,22 +1,52 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="ko" xmlns:th="http://www.thymeleaf.org">
 <head>
   <meta charset="UTF-8">
-  <title>Create Member Form</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Timeline Service</title>
+
+  <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
+  <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+KR:wght@500&display=swap" rel="stylesheet">
+  <script>
+    $(document).ready(function () {
+      // HTML 문서를 로드할 때마다 실행합니다.
+    })
+
+    function writePost() {
+      // 1. 작성한 메모를 불러옵니다.
+      let username = $('#username').val();
+      let password = $('#password').val();
+      let contents = $('#contents').val();
+      let title = $('#title').val();
+      console.log(username, password, contents, title);
+
+      // 4. 전달할 data를 JSON으로 만듭니다.
+      let data = {'username': username, 'password' : password, 'contents': contents, 'title' : title};
+
+      $.ajax({
+        type: "POST",
+        url: "/forums/new/api",
+        contentType: "application/json",
+        data: JSON.stringify(data),
+        success: function (response) {
+          alert('메시지가 성공적으로 작성되었습니다.');
+          window.location.reload();
+        }
+      });
+    }
+  </script>
 </head>
+
 <body>
-<div class="container">
-  <form action="/members/new" method="post">
-    <div class="form-group">
-      <label for="username">ID</label>
-      <input type="text" id = "username" name="username" placeholder="ID를 입력하시오">
-      <label for="password">PW</label>
-      <input type="text" id = "password" name="password" placeholder="PW를 입력하시오">
-      <label for="contents">Contents</label>
-      <input type="text" id = "contents" name="contents" placeholder="내용을 입력하시오">
-    </div>
-    <button type="submit">등록</button>
-  </form>
+<div class="wrap">
+  <div class="header">
+    ID<input type="text" th:id = "username" name="username" placeholder="ID를 입력하시오">
+    PW<input type="text" th:id = "password" name="password" placeholder="PW를 입력하시오">
+    Title<input type="text" th:id = "title" name="title" placeholder="제목을 입력하시오">
+    Contents<textarea th:id="contents" name="contents" placeholder="공유하고 싶은 소식을 입력하세요." cols="30" rows="10"></textarea>
+  </div>
+  <button type="submit" onclick="writePost()">등록</button>
 </div>
 </body>
+
 </html>
