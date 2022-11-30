@@ -11,6 +11,7 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
+import org.springframework.web.server.ResponseStatusException;
 
 import javax.swing.text.html.Option;
 import java.nio.charset.StandardCharsets;
@@ -67,9 +68,9 @@ public class ForumService {
     // 단일 게시물 확인
     @Transactional
     public ResponseEntity<ForumResponseDto> getForum(long id){
-        // 단일 게시물 찾기, 예외처리 방법 생각해볼 필요 있음
+        // 단일 게시물 찾기, 예외 발생시 404 Notfound 반환
         Forum tmp = forumRepository.findById(id)
-                .orElseThrow(IllegalArgumentException::new);
+                .orElseThrow(()-> new ResponseStatusException(HttpStatus.NOT_FOUND, "No Forum Data"));
 
         return fromForum(tmp, HttpStatus.OK, "Forum Called");
     }
@@ -78,16 +79,11 @@ public class ForumService {
     @Transactional
     public ResponseEntity<ForumResponseDto> updateForum(Long id, String password, ForumRequestDto requestDto) throws NoSuchAlgorithmException{
         // Forum ID 기준으로 Forum 찾아오기
-        Optional<Forum> tmpOptional = forumRepository.findById(id);
-        if (tmpOptional.isEmpty()){
-            // null 일 때 BAD_REQUEST 반환
-            return fromForum(forumErr, HttpStatus.BAD_REQUEST, "Forum Revised");
-        }
-        Forum tmp = tmpOptional.get();
-
+        Forum tmp = forumRepository.findById(id)
+                .orElseThrow(()-> new ResponseStatusException(HttpStatus.NOT_FOUND, "No Forum Data"));
         // 입력한 비밀번호 암호화
         if (SHA256.encrypt(password).equals(tmp.getPassword())){
-            // 비밀번호 일치할 때 값 수정,  JPA 더티 리딩
+            // 비밀번호 일치할 때 값 수정,  JPA 더티 리딩(?)
             tmp.update(requestDto);
         }
         // 변경 완료된 Forum ResponseEntity에 담기
