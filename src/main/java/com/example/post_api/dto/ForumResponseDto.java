@@ -16,7 +16,10 @@ import java.time.LocalDateTime;
 public class ForumResponseDto{
     private String username;
     private String title;
+
+//    @Getter(AccessLevel.NONE) -> 이거 사용하면 JSON 대상에서 뺄 수 있음
     private String contents;
+
     private LocalDateTime modifiedAt;
 
     public ForumResponseDto(Forum tmp){

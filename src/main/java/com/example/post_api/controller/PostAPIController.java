@@ -4,6 +4,7 @@ import com.example.post_api.dto.ForumRequestDto;
 import com.example.post_api.dto.ForumResponseDto;
 import com.example.post_api.service.ForumService;
 import lombok.RequiredArgsConstructor;
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import java.security.NoSuchAlgorithmException;
