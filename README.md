@@ -45,10 +45,11 @@
 
 </aside>
 
-![KakaoTalk_20221130_152602331.jpg](Spring%20%E1%84%8B%E1%85%B5%E1%86%B8%E1%84%86%E1%85%AE%E1%86%AB%20c73514b964f0431ba291c3c0f3659363/KakaoTalk_20221130_152602331.jpg)
+![KakaoTalk_20221130_152602331](https://user-images.githubusercontent.com/72681875/204935243-d1b50ba1-ba5c-4ec6-b6cb-9565a6f40f83.jpg)
 
 <aside>
 💡 3. API 설계
+
 
 </aside>
 
