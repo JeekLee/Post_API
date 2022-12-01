@@ -13,19 +13,16 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 import org.springframework.web.server.ResponseStatusException;
 
-import javax.swing.text.html.Option;
 import java.nio.charset.StandardCharsets;
 import java.security.NoSuchAlgorithmException;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Optional;
 
 @Service
 @RequiredArgsConstructor
 public class ForumService {
     private final ForumRepository forumRepository;
 
-    // Forum을 ResponseEntity<ForumResponseDto>로 변경
     private static ResponseEntity<ForumResponseDto> fromForum(Forum tmp, HttpStatus httpStatus, String httpMsg) {
         // Response Dto로 받고, ResponseEntity 생성
         ForumResponseDto forumResponseDto = new ForumResponseDto(tmp);
@@ -37,7 +34,6 @@ public class ForumService {
 
         return new ResponseEntity<>(forumResponseDto, header, httpStatus);
     }
-    Forum forumErr = new Forum();
 
     // 게시물 생성
     @Transactional
