@@ -4,22 +4,22 @@
 <aside>
 🖇️ https://github.com/JeekLee/Post_API
 
-</aside>
+</aside><br>
 
 <aside>
 💡 1. 과제 요구사항
 
-</aside>
+</aside><br>
 
 <aside>
 ⚠️ **아래의 요구사항에 맞는 API 명세서를 작성해 보고 프로젝트를 생성해 직접 구현해 보세요!**
 
-</aside>
+</aside><br>
 
 <aside>
 ✅ 서비스 완성 요구사항
 
-</aside>
+</aside><br>
 
 1. 아래의 요구사항을 기반으로 Use Case 그려보기 ✔
     - 손으로 그려도 됩니다.
@@ -43,7 +43,7 @@
 <aside>
 💡 2. Use Case
 
-</aside>
+</aside><br>
 
 ![KakaoTalk_20221130_152602331](https://user-images.githubusercontent.com/72681875/204935243-d1b50ba1-ba5c-4ec6-b6cb-9565a6f40f83.jpg)
 
@@ -51,19 +51,19 @@
 💡 3. API 설계
 
 
-</aside>
+</aside><br>
 
 [API 구조](https://www.notion.so/3af19518c52a4fc9877e74a08b5558d5)
 
 <aside>
 💡 4. 추가 답변
 
-</aside>
+</aside><br>
 
 <aside>
 ❓ **Why: 과제 제출시에는 아래 질문을 고민해보고 답변을 함께 제출해주세요.**
 
-</aside>
+</aside><br>
 
 1. 수정, 삭제 API의 request를 어떤 방식으로 사용하셨나요? (param, query, body)
     1. 수정 : URL Parameter
