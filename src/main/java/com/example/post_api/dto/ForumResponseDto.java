@@ -1,19 +1,17 @@
 package com.example.post_api.dto;
 
 import com.example.post_api.entity.Forum;
-import com.fasterxml.jackson.annotation.JsonProperty;
-import lombok.AccessLevel;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
-import lombok.Setter;
-import lombok.experimental.Accessors;
-import org.springframework.http.HttpStatus;
 
 import java.time.LocalDateTime;
+import java.util.ArrayList;
+import java.util.List;
+
 @NoArgsConstructor
 @Getter // Getter 선언 안하면 Responsebody에서 리턴이 안됨 ㅅㅂ
-@Setter
 public class ForumResponseDto{
+    private long id;
     private String username;
     private String title;
 
@@ -21,11 +19,18 @@ public class ForumResponseDto{
     private String contents;
 
     private LocalDateTime modifiedAt;
+    private List<CommentResponseDto> commentList = new ArrayList<>();
 
     public ForumResponseDto(Forum tmp){
+        this.id = tmp.getId();
         this.username = tmp.getUsername();
         this.title = tmp.getTitle();
         this.contents = tmp.getContents();
         this.modifiedAt = tmp.getModifiedAt();
+
+        // Entity를 바로 반환하는 실수는 하지 말자
+        for (int i = 0; i < tmp.getCommentList().size(); i++) {
+            commentList.add(new CommentResponseDto(tmp.getCommentList().get(i)));
+        }
     }
 }

@@ -3,7 +3,14 @@ package com.example.post_api.service;
 import com.example.post_api.dto.ForumRequestDto;
 import com.example.post_api.dto.ForumResponseDto;
 import com.example.post_api.entity.Forum;
+import com.example.post_api.entity.User;
+import com.example.post_api.exception.CustomException;
+import com.example.post_api.exception.ErrorCode;
+import com.example.post_api.jwt.JwtUtil;
 import com.example.post_api.repository.ForumRepository;
+import com.example.post_api.repository.UserRepository;
+import io.jsonwebtoken.Claims;
+import jakarta.servlet.http.HttpServletRequest;
 import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpHeaders;
@@ -11,19 +18,22 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
-import org.springframework.web.server.ResponseStatusException;
-
 import java.nio.charset.StandardCharsets;
-import java.security.NoSuchAlgorithmException;
 import java.util.ArrayList;
 import java.util.List;
 
 @Service
 @RequiredArgsConstructor
 public class ForumService {
+    // Repositories
     private final ForumRepository forumRepository;
+    private final UserRepository userRepository;
 
-    private static ResponseEntity<ForumResponseDto> fromForum(Forum tmp, HttpStatus httpStatus, String httpMsg) {
+    // JWT Utils
+    private final JwtUtil jwtUtil;
+
+    // Forum to ResponseEntity<ForumResponseDto>
+    private ResponseEntity<ForumResponseDto> fromForum(Forum tmp, HttpStatus httpStatus, String httpMsg) {
         // Response Dto로 받고, ResponseEntity 생성
         ForumResponseDto forumResponseDto = new ForumResponseDto(tmp);
 
@@ -37,22 +47,35 @@ public class ForumService {
 
     // 게시물 생성
     @Transactional
-    public ResponseEntity<ForumResponseDto> createForum(ForumRequestDto requestDto) throws NoSuchAlgorithmException {
-        // PW 암호화
-        requestDto.setPassword(SHA256.encrypt(requestDto.getPassword()));
+    public ResponseEntity<ForumResponseDto> createForum(ForumRequestDto requestDto, HttpServletRequest httpServletRequest) {
+        // 1. JWT의 유효성 검증 및 사용자 정보 가져오기
+        Claims claims = jwtUtil.getUserInfoFromHttpServletRequest(httpServletRequest);
 
-        // RequestDto -> Forum
-        Forum tmp = new Forum(requestDto);
+        // 2. JWT에서 가져온 사용자 정보를 통해 존재하는 사용자인지 확인
+        User user = userRepository.findByUsername(claims.getSubject())
+                // 등록되지 않은 사용자인 경우 Exception 출력
+                .orElseThrow(()-> new CustomException(ErrorCode.UNAUTHORIZED_USER));
 
-        // DB에 Forum 저장(JPA)
-        forumRepository.save(tmp);
+        // 3. RequestDto + User -> Forum, Forum 생성자에 양방향 연관관계 포함
+        Forum forum = new Forum(requestDto, user);
 
-        return fromForum(tmp, HttpStatus.OK, "Forum Saved");
+        // 4. DB에 Forum 저장(JPA)
+        forumRepository.saveAndFlush(forum);
+
+        return fromForum(forum, HttpStatus.OK, "Forum Saved");
     }
 
     // 게시물 리스트 확인
     @Transactional
-    public List<ResponseEntity<ForumResponseDto>> getForums(){
+    public List<ResponseEntity<ForumResponseDto>> getForums(HttpServletRequest httpServletRequest){
+        // 1. JWT의 유효성 검증 및 사용자 정보 가져오기
+        Claims claims = jwtUtil.getUserInfoFromHttpServletRequest(httpServletRequest);
+
+        // 2. JWT에서 가져온 사용자 정보를 통해 존재하는 사용자인지 확인
+        User user = userRepository.findByUsername(claims.getSubject())
+                // 등록되지 않은 사용자인 경우 Exception 출력
+                .orElseThrow(()-> new CustomException(ErrorCode.UNAUTHORIZED_USER));
+
         List<Forum> tmp = forumRepository.findAllByOrderByModifiedAtDesc();
         List<ResponseEntity<ForumResponseDto>> result = new ArrayList<>();
         for (Forum forum : tmp) {
@@ -63,34 +86,70 @@ public class ForumService {
 
     // 단일 게시물 확인
     @Transactional
-    public ResponseEntity<ForumResponseDto> getForum(long id){
+    public ResponseEntity<ForumResponseDto> getForum(long id, HttpServletRequest httpServletRequest){
+        // 1. JWT의 유효성 검증 및 사용자 정보 가져오기
+        Claims claims = jwtUtil.getUserInfoFromHttpServletRequest(httpServletRequest);
+
+        // 2. JWT에서 가져온 사용자 정보를 통해 존재하는 사용자인지 확인
+        User user = userRepository.findByUsername(claims.getSubject())
+                // 등록되지 않은 사용자인 경우 Exception 출력
+                .orElseThrow(()-> new CustomException(ErrorCode.UNAUTHORIZED_USER));
+
         // 단일 게시물 찾기, 예외 발생시 404 Notfound 반환
         Forum tmp = forumRepository.findById(id)
-                .orElseThrow(()-> new ResponseStatusException(HttpStatus.NOT_FOUND, "No Forum Data"));
+                .orElseThrow(()-> new CustomException(ErrorCode.FORUM_NOT_FOUND));
 
         return fromForum(tmp, HttpStatus.OK, "Forum Called");
     }
 
     // 단일 게시물 수정
     @Transactional
-    public ResponseEntity<ForumResponseDto> updateForum(Long id, String password, ForumRequestDto requestDto) throws NoSuchAlgorithmException{
-        // Forum ID 기준으로 Forum 찾아오기
-        Forum tmp = forumRepository.findById(id)
-                .orElseThrow(()-> new ResponseStatusException(HttpStatus.NOT_FOUND, "No Forum Data"));
-        // 입력한 비밀번호 암호화
-        if (SHA256.encrypt(password).equals(tmp.getPassword())){
-            // 비밀번호 일치할 때 값 수정,  JPA 더티 리딩(?)
-            tmp.update(requestDto);
+    public ResponseEntity<ForumResponseDto> updateForum(long id, ForumRequestDto requestDto, HttpServletRequest httpServletRequest) {
+        // 1. JWT의 유효성 검증 및 사용자 정보 가져오기
+        Claims claims = jwtUtil.getUserInfoFromHttpServletRequest(httpServletRequest);
+
+        // 2. JWT에서 가져온 사용자 정보를 통해 존재하는 사용자인지 확인
+        User user = userRepository.findByUsername(claims.getSubject())
+                // 등록되지 않은 사용자인 경우 Exception 출력
+                .orElseThrow(()-> new CustomException(ErrorCode.UNAUTHORIZED_USER));
+
+        // 3. Forum ID 기준으로 Forum 찾아오기
+        Forum forum = forumRepository.findById(id)
+                .orElseThrow(()-> new CustomException(ErrorCode.FORUM_NOT_FOUND));
+
+        // 4. Forum의 작성자와 현재 사용자가 일치하는지 확인
+        if(!forum.getUser().getUsername().equals(user.getUsername())){
+            throw new CustomException(ErrorCode.UNAUTHORIZED_USER);
         }
+
+        // 5. Forum Update
+        forum.update(requestDto);
+
         // 변경 완료된 Forum ResponseEntity에 담기
-        return fromForum(tmp, HttpStatus.OK, "Forum Revised");
+        return fromForum(forum, HttpStatus.OK, "Forum Revised");
     }
 
     // 단일 게시물 삭제
     @Transactional
-    public ResponseEntity<ForumResponseDto> deleteForum(Long id){
+    public ResponseEntity<ForumResponseDto> deleteForum(Long id, HttpServletRequest httpServletRequest){
+        // 1. JWT의 유효성 검증 및 사용자 정보 가져오기
+        Claims claims = jwtUtil.getUserInfoFromHttpServletRequest(httpServletRequest);
+
+        // 2. JWT에서 가져온 사용자 정보를 통해 존재하는 사용자인지 확인
+        User user = userRepository.findByUsername(claims.getSubject())
+                // 등록되지 않은 사용자인 경우 Exception 출력
+                .orElseThrow(()-> new CustomException(ErrorCode.UNAUTHORIZED_USER));
+
+        // 3. Forum ID 기준으로 Forum 찾아오기
+        Forum forum = forumRepository.findById(id)
+                .orElseThrow(()-> new CustomException(ErrorCode.FORUM_NOT_FOUND));
+
+        // 4. Forum의 작성자와 현재 사용자가 일치하는지 확인
+        if(!forum.getUsername().equals(user.getUsername())){
+            throw new CustomException(ErrorCode.UNAUTHORIZED_USER);
+        }
+
         forumRepository.deleteById(id);
-        Forum tmp = new Forum();
-        return fromForum(tmp, HttpStatus.OK, "Forum Deleted");
+        return fromForum(forum, HttpStatus.OK, "Forum Deleted");
     }
 }

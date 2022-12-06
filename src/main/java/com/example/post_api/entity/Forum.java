@@ -5,6 +5,9 @@ import jakarta.persistence.*;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 
+import java.util.ArrayList;
+import java.util.List;
+
 @Getter
 @Entity
 @NoArgsConstructor
@@ -19,27 +22,27 @@ public class Forum extends TimeStamp{
     @Column(nullable = false)
     private String username;
 
-    @Column(nullable = false)
-    private String password;
 
     @Column(nullable = false)
     private String title;
 
-    public Forum(String username, String password, String contents, String title){
-        this.username = username;
-        this.password = password;
-        this.contents = contents;
-        this.title = title;
-    }
+    @ManyToOne
+    @JoinColumn(name = "USER_ID")
+    private User user;
 
-    public Forum(ForumRequestDto requestDto){
-        this.username = requestDto.getUsername();
-        this.password = requestDto.getPassword();
+    @OneToMany(mappedBy = "forum", orphanRemoval = true)
+    private List<Comment> commentList = new ArrayList<>();
+
+    public Forum(ForumRequestDto requestDto, User user){
+        this.username = user.getUsername();
         this.contents = requestDto.getContents();
         this.title = requestDto.getTitle();
+
+        // 양방향 연관관계 설정
+        this.user = user;
+        user.getForumList().add(this);
     }
     public void update(ForumRequestDto requestDto){
-        this.username = requestDto.getUsername();
         this.title = requestDto.getTitle();
         this.contents = requestDto.getContents();
     }
