@@ -6,6 +6,7 @@ import com.example.post_api.dto.ForumResponseDto;
 import com.example.post_api.entity.Comment;
 import com.example.post_api.entity.Forum;
 import com.example.post_api.entity.User;
+import com.example.post_api.entity.UserRoleEnum;
 import com.example.post_api.exception.CustomException;
 import com.example.post_api.exception.ErrorCode;
 import com.example.post_api.jwt.JwtUtil;
@@ -88,8 +89,8 @@ public class CommentService {
         Comment comment = commentRepository.findById(comment_id)
                 .orElseThrow(()-> new CustomException(ErrorCode.COMMENT_NOT_FOUND));
 
-        // 4. comment 작성자와 현재 사용자가 일치하는 지 확인
-        if(!comment.getUsername().equals(user.getUsername())){
+        // 4. comment 작성자와 현재 사용자가 일치하는 지 확인 및 관리자가 아닌지 확인
+        if(!comment.getUsername().equals(user.getUsername()) && user.getRole() == UserRoleEnum.USER){
             throw new CustomException(ErrorCode.UNAUTHORIZED_USER);
         }
 
@@ -115,8 +116,8 @@ public class CommentService {
         Comment comment = commentRepository.findById(comment_id)
                 .orElseThrow(()-> new CustomException(ErrorCode.COMMENT_NOT_FOUND));
 
-        // 4. comment 작성자와 현재 사용자가 일치하는 지 확인
-        if(!comment.getUsername().equals(user.getUsername())){
+        // 4. comment 작성자와 현재 사용자가 일치하는 지 확인 및 관리자가 아닌지 확인
+        if(!comment.getUsername().equals(user.getUsername()) && user.getRole() == UserRoleEnum.USER){
             throw new CustomException(ErrorCode.UNAUTHORIZED_USER);
         }
 

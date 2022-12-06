@@ -4,6 +4,7 @@ import com.example.post_api.dto.ForumRequestDto;
 import com.example.post_api.dto.ForumResponseDto;
 import com.example.post_api.entity.Forum;
 import com.example.post_api.entity.User;
+import com.example.post_api.entity.UserRoleEnum;
 import com.example.post_api.exception.CustomException;
 import com.example.post_api.exception.ErrorCode;
 import com.example.post_api.jwt.JwtUtil;
@@ -117,8 +118,8 @@ public class ForumService {
         Forum forum = forumRepository.findById(id)
                 .orElseThrow(()-> new CustomException(ErrorCode.FORUM_NOT_FOUND));
 
-        // 4. Forum의 작성자와 현재 사용자가 일치하는지 확인
-        if(!forum.getUser().getUsername().equals(user.getUsername())){
+        // 4. Forum의 작성자와 현재 사용자가 일치하는지, 관리자가 아닌지  확인
+        if(!forum.getUser().getUsername().equals(user.getUsername()) && user.getRole() == UserRoleEnum.USER){
             throw new CustomException(ErrorCode.UNAUTHORIZED_USER);
         }
 
@@ -145,7 +146,7 @@ public class ForumService {
                 .orElseThrow(()-> new CustomException(ErrorCode.FORUM_NOT_FOUND));
 
         // 4. Forum의 작성자와 현재 사용자가 일치하는지 확인
-        if(!forum.getUsername().equals(user.getUsername())){
+        if(!forum.getUsername().equals(user.getUsername()) && user.getRole() == UserRoleEnum.USER){
             throw new CustomException(ErrorCode.UNAUTHORIZED_USER);
         }
 
