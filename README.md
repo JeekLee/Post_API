@@ -1,5 +1,5 @@
 # Post_API
-# Spring 입문
+## Spring 입문 1주차
 
 <aside>
 🖇️ https://github.com/JeekLee/Post_API
@@ -78,8 +78,7 @@
     1. HTTP URI(Uniform Resource Identifier)를 통해 자원(Resource)을 명시하고,
     2. HTTP Method(POST, GET, PUT, DELETE, PATCH 등)를 통해
     3. 해당 자원(URI)에 대한 CRUD Operation을 적용하는 것을 의미한다.
-    > 
-    
+ 
     > REST API 설계 규칙
     1. URI는 동사보다는 명사를, 대문자보다는 소문자를 사용하여야 한다.
     2. 마지막에 슬래시 (/)를 포함하지 않는다.
@@ -104,3 +103,8 @@
     DB와 통신에 있어, 중간 단계에서 틀을 잡아주는 역할로 사용했다. Response의 경우 ResponseEntity로 감싸 header, body, httpStatus를 좀 더 세밀하게 다루었다.
     5. Entity : TimeStamp, Forum
     게시판 기능에 사용되는 모든 field를 담은 Forum을 사용했으며, TimeStamp를 abstract Class로 선언해 수정 시간과 작성 시간을 반영할 수 있도록 했다.
+
+## Spring 입문 2주차
+
+### 🔥 API 명세서
+> https://documenter.getpostman.com/view/24666737/2s8YzP24wf
