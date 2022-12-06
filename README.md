@@ -1,9 +1,10 @@
-## Spring 입문 1주차
+# Spring 입문 1주차
 
 ### 📖 Document
 > https://www.notion.so/Spring-c73514b964f0431ba291c3c0f3659363
 
-## Spring 입문 2주차
+
+# Spring 입문 2주차
 
 ### 📖 Document
 > https://www.notion.so/Spring-LV2-055aa1ea01bc4de88edb450d107d5958
