@@ -108,3 +108,6 @@
 
 ### 🔥 API 명세서
 > https://documenter.getpostman.com/view/24666737/2s8YzP24wf
+
+### 🔥 ERM 설계
+> ![erm](https://user-images.githubusercontent.com/72681875/205895053-32d8eeee-4998-4d41-8778-98ce097ac664.PNG)
