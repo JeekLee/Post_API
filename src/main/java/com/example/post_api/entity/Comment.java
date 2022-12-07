@@ -9,7 +9,6 @@ import lombok.NoArgsConstructor;
 @Getter
 @Entity
 @NoArgsConstructor
-@AllArgsConstructor
 public class Comment extends TimeStamp{
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)
