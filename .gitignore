@@ -9,6 +9,7 @@ token.properties
 
 ### Diagrams ###
 .drawio
+*.drawio.*
 
 ### STS ###
 .apt_generated

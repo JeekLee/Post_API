@@ -9,6 +9,8 @@
 ### 📖 Document
 > https://protective-whale-78f.notion.site/Spring-LV2-055aa1ea01bc4de88edb450d107d5958
 
+> https://velog.io/@jaymild/Spring-JPA-Entity-DTO
+
 ### 📃 API 명세서
 > https://documenter.getpostman.com/view/24666737/2s8YzP24wf
 
