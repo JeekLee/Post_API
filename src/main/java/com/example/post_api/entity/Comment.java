@@ -20,11 +20,11 @@ public class Comment extends TimeStamp{
     @Column(nullable = false)
     private String username;
 
-    @ManyToOne
-    @JoinColumn(name = "FORUM_ID")
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "FORUM_ID") // 연관 관계의 주인임을 선언 = fk 나한테 줘라
     private Forum forum;
 
-    // #3. Entity의 생성자에 Dto가 사용되는 방식(Entity가 Dto에 의존) (Worst)
+    // #3. Entity의 생성자에 Dto가 사용되는 방식(Entity가 Dto에 의존) (Worst Case)
     public Comment(CommentRequestDto requestDto, Forum forum){
         this.username = forum.getUsername();
         this.contents = requestDto.getContents();
