@@ -2,6 +2,7 @@ package com.example.post_api.entity;
 
 import com.example.post_api.dto.ForumRequestDto;
 import jakarta.persistence.*;
+import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 
@@ -16,15 +17,12 @@ public class Forum extends TimeStamp{
     @GeneratedValue(strategy = GenerationType.AUTO)
     private Long id;
 
-    @Column
-    private String contents;
-
     @Column(nullable = false)
     private String username;
-
-
     @Column(nullable = false)
     private String title;
+    @Column
+    private String contents;
 
     @ManyToOne
     @JoinColumn(name = "USER_ID")
@@ -33,15 +31,18 @@ public class Forum extends TimeStamp{
     @OneToMany(mappedBy = "forum", orphanRemoval = true)
     private List<Comment> commentList = new ArrayList<>();
 
-    public Forum(ForumRequestDto requestDto, User user){
+    @Builder
+    public Forum(String username, String title, String contents, User user){
         this.username = user.getUsername();
-        this.contents = requestDto.getContents();
-        this.title = requestDto.getTitle();
+
+        this.title = title;
+        this.contents = contents;
 
         // 양방향 연관관계 설정
         this.user = user;
         user.getForumList().add(this);
     }
+
     public void update(ForumRequestDto requestDto){
         this.title = requestDto.getTitle();
         this.contents = requestDto.getContents();

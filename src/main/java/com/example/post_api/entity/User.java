@@ -28,6 +28,7 @@ public class User {
     @OneToMany(mappedBy = "user", orphanRemoval = true)
     private List<Forum> forumList = new ArrayList<>();
 
+    // #1. 생성자에 requestDto를 포함하지 않고, Value를 직접 넣어서 Entity를 생성하는 방식
     public User(String username, String password, UserRoleEnum role) {
         this.username = username;
         this.password = password;

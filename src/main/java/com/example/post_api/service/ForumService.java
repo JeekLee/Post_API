@@ -58,7 +58,7 @@ public class ForumService {
                 .orElseThrow(()-> new CustomException(ErrorCode.UNAUTHORIZED_USER));
 
         // 3. RequestDto + User -> Forum, Forum 생성자에 양방향 연관관계 포함
-        Forum forum = new Forum(requestDto, user);
+        Forum forum = requestDto.toForum(user);
 
         // 4. DB에 Forum 저장(JPA)
         forumRepository.saveAndFlush(forum);

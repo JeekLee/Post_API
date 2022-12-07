@@ -1,7 +1,6 @@
 package com.example.post_api.service;
 
 import com.example.post_api.dto.*;
-import com.example.post_api.entity.Forum;
 import com.example.post_api.entity.User;
 import com.example.post_api.entity.UserRoleEnum;
 import com.example.post_api.exception.CustomException;
@@ -10,7 +9,6 @@ import com.example.post_api.jwt.JwtUtil;
 import com.example.post_api.repository.UserRepository;
 import jakarta.servlet.http.HttpServletResponse;
 import lombok.RequiredArgsConstructor;
-import org.apache.coyote.Response;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.PropertySource;
 import org.springframework.http.HttpHeaders;
@@ -19,11 +17,9 @@ import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
-import org.springframework.web.server.ResponseStatusException;
 
 import java.nio.charset.StandardCharsets;
 import java.security.NoSuchAlgorithmException;
-import java.util.Optional;
 
 @Service
 @RequiredArgsConstructor
@@ -44,7 +40,7 @@ public class UserService {
 
         // 1. username 확인
         // 1-1. username 형식 확인
-        if(!Validation.isValidUsername(username)){
+        if(!Validator.isValidUsername(username)){
             throw new CustomException(ErrorCode.INVALID_USERNAME);
         }
         // 1-2. username 중복 확인
@@ -55,7 +51,7 @@ public class UserService {
 
         // 2. password 확인
         // 2-1. password 형식 확인
-        if(!Validation.isValidPassword(password)){
+        if(!Validator.isValidPassword(password)){
             throw new CustomException(ErrorCode.INVALID_PASSWORD);
         }
         // 2-2. password 암호화(SHA256)

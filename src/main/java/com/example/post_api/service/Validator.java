@@ -1,10 +1,10 @@
 package com.example.post_api.service;
 
-import lombok.RequiredArgsConstructor;
-
+import org.springframework.stereotype.Service;
 import java.util.regex.Pattern;
-@RequiredArgsConstructor
-public class Validation {
+
+@Service
+public class Validator {
     public static boolean isValidUsername(String username){
         final int MAX = 10;
         final int MIN = 4;
@@ -19,6 +19,7 @@ public class Validation {
         final int MIN = 8;
 
         // 영어, 숫자, 특수문자 조합
+        // ?=.* 는 [] 안의 값이 1개는 들어가야 한다는 뜻
         final String REGEX = "^(?=.*[a-zA-Z])(?=.*[0-9])(?=.*[!@#$%^&*])[a-zA-Z0-9!@#$%^&*]{" + MIN + "," + MAX + "}$";
 
         return Pattern.matches(REGEX, password);
