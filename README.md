@@ -1,13 +1,13 @@
 # Spring 입문 1주차
 
 ### 📖 Document
-> https://www.notion.so/Spring-c73514b964f0431ba291c3c0f3659363
+> https://protective-whale-78f.notion.site/Spring-c73514b964f0431ba291c3c0f3659363
 
 
 # Spring 입문 2주차
 
 ### 📖 Document
-> https://www.notion.so/Spring-LV2-055aa1ea01bc4de88edb450d107d5958
+> https://protective-whale-78f.notion.site/Spring-LV2-055aa1ea01bc4de88edb450d107d5958
 
 ### 📃 API 명세서
 > https://documenter.getpostman.com/view/24666737/2s8YzP24wf
